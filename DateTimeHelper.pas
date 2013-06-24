@@ -48,6 +48,14 @@ type
     class function GetToday: TDateTime; static; inline;
     class function GetTomorrow: TDateTime; static; inline;
     class function GetYesterDay: TDateTime; static; inline;
+    procedure SetSecond(const Value: Word);
+    procedure SetDay(const Value: Word);
+    procedure setHour(const Value: Word);
+    procedure SetMillisecond(const Value: Word);
+    procedure SetMinute(const Value: Word);
+    procedure SetMonth(const Value: Word);
+    procedure SetYear(const Value: Integer);
+
   public
     class function Create(const aYear, aMonth, aDay: Word): TDateTime; overload; static; inline;
     class function Create(const aYear, aMonth, aDay, aHour, aMinute, aSecond,
@@ -64,15 +72,18 @@ type
     property DayOfWeek: Word read GetDayOfWeek;
     property DayOfYear: Word read GetDayOfYear;
 
-    property Year: Integer read GetYear;
-    property Month: Word read GetMonth;
-    property Day: Word read GetDay;
-    property Hour: Word read GetHour;
-    property Minute: Word read GetMinute;
-    property Second: Word read GetSecond;
-    property Millisecond: Word read GetMillisecond;
+    property Year: Integer read GetYear write SetYear;
+    property Month: Word read GetMonth write SetMonth;
+    property Day: Word read GetDay write SetDay;
+    property Hour: Word read GetHour write setHour;
+    property Minute: Word read GetMinute write SetMinute;
+    property Second: Word read GetSecond write SetSecond;
+    property Millisecond: Word read GetMillisecond write SetMillisecond;
+    // Alias of millisecond
+    property MS: Word read GetMillisecond write SetMillisecond;
 
     function ToString(const aFormatStr: string = ''): string; inline;
+    function Format(const aFormatStr: string = ''): string; inline;
 
     function StartOfYear: TDateTime; inline;
     function EndOfYear: TDateTime; inline;
@@ -97,6 +108,9 @@ type
     function InRange(const aStartDateTime, aEndDateTime: TDateTime; const aInclusive: Boolean = True): Boolean; inline;
     function IsInLeapYear: Boolean; inline;
     function IsToday: Boolean; inline;
+    function IsTomorrow: Boolean; inline;
+    function IsYesterday: Boolean; inline;
+    function IsDayAfterTomorrow: Boolean; inline;
     function IsAM: Boolean; inline;
     function IsPM: Boolean; inline;
 
@@ -205,6 +219,11 @@ begin
   Result := SameDateTime(Self, aDateTime);
 end;
 
+function TDateTimeHelper.Format(const aFormatStr: string): string;
+begin
+  Result := ToString(aFormatStr);
+end;
+
 function TDateTimeHelper.GetDate: TDateTime;
 begin
   Result := DateOf(Self);
@@ -295,6 +314,11 @@ begin
   Result := System.DateUtils.IsAM(Self);
 end;
 
+function TDateTimeHelper.IsDayAfterTomorrow: Boolean;
+begin
+  Result := IsSameDay(Self.AddDays(2));
+end;
+
 function TDateTimeHelper.IsInLeapYear: Boolean;
 begin
   Result := System.DateUtils.IsInLeapYear(Self);
@@ -315,6 +339,16 @@ begin
   Result := System.DateUtils.IsToday(Self);
 end;
 
+function TDateTimeHelper.IsTomorrow: Boolean;
+begin
+  Result := IsSameDay(TDateTime.Tomorrow);
+end;
+
+function TDateTimeHelper.IsYesterday: Boolean;
+begin
+  Result := IsSameDay(TDateTime.Yesterday);
+end;
+
 function TDateTimeHelper.MilliSecondsBetween(const aDateTime: TDateTime): Int64;
 begin
   Result := System.DateUtils.MilliSecondsBetween(Self, aDateTime);
@@ -330,9 +364,44 @@ begin
   Result := System.DateUtils.MonthsBetween(Self, aDateTime);
 end;
 
+procedure TDateTimeHelper.SetSecond(const Value: Word);
+begin
+  Self := RecodeSecond(Self, Value);
+end;
+
 function TDateTimeHelper.SecondsBetween(const aDateTime: TDateTime): Int64;
 begin
   Result := System.DateUtils.SecondsBetween(Self, aDateTime);
+end;
+
+procedure TDateTimeHelper.SetDay(const Value: Word);
+begin
+  Self := RecodeDay(Self, Value);
+end;
+
+procedure TDateTimeHelper.setHour(const Value: Word);
+begin
+  Self := RecodeHour(Self, Value);
+end;
+
+procedure TDateTimeHelper.SetMillisecond(const Value: Word);
+begin
+  Self := RecodeMilliSecond(Self, Value);
+end;
+
+procedure TDateTimeHelper.SetMinute(const Value: Word);
+begin
+  Self := RecodeMinute(Self, Value);
+end;
+
+procedure TDateTimeHelper.SetMonth(const Value: Word);
+begin
+  Self := RecodeMonth(Self, Value);
+end;
+
+procedure TDateTimeHelper.SetYear(const Value: Integer);
+begin
+  Self := RecodeYear(Self, Value);
 end;
 
 function TDateTimeHelper.StartOfDay: TDateTime;

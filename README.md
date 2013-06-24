@@ -1,8 +1,8 @@
 # TDateTimeHelper
 
-A TDateTime helper record for Delphi XE3.
+A TDateTime helper record for Delphi XE3 or above.
 
-One of the updated language features for XE3 are record helpers for simple types.
+One of the updated language features for XE3 or above are record helpers for simple types.
 
 To learn a little bit more, I decided to make a record helper for the TDateTime type. It's a very simple record helper which pretty much calls the existing date time functions that are in the DateUtils unit. One benefit is that it allows you to assign and manipulate datetime values very easily.
 
@@ -51,6 +51,16 @@ An important rule that I have applied in creating this record helper is that TDa
 
     WriteLn(T1.AddYears(2).ToString); // will return 14/09/2014
     WriteLn(T1.ToString);             // T1 is unchanged and will still be 14/09/2012.
+
+Update History
+-----
+2013.06.24
+
+Added IsTomorrow
+Added IsDayAfterTomorrow
+Added property write to Year, Month, Day, Hour Minute, Second, MilliSecond
+Added MS alias to MilliSecond
+Added Format alias to ToString (for developer who are not use to toString function name)
 
 
 To Do
